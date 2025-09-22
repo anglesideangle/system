@@ -24,15 +24,15 @@
         ] (system: function nixpkgs.legacyPackages.${system});
     in
     rec {
-      nixosConfigurations.asa-fw = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.asa-fw = nixpkgs.lib.nixosSystem rec {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          packages = packages."x86_64-linux";
+          packages = packages."${system}";
         };
         modules = [
           modules/system.nix
-          modules/desktop.nix
+          modules/niri.nix
           modules/apps.nix
           modules/fonts.nix
           modules/networking.nix
@@ -45,7 +45,7 @@
 
       packages = forAllSystems (pkgs: import ./programs { inherit pkgs; });
 
-      devShells = forAllSystems (pkgs: pkgs.nil);
+      devShell = forAllSystems (pkgs: pkgs.nil);
 
       formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
     };

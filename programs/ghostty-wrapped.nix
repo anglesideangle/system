@@ -9,10 +9,10 @@ let
     # font-family = "Hack"
     font-size = ${theme.lengths.font-sm}
 
-    theme = "OneHalfDark"
+    theme = "Atom One Dark"
 
-    window-padding-x = 8
-    window-padding-y = 8
+    # window-padding-x = ${theme.lengths.padding}
+    # window-padding-y = ${theme.lengths.padding}
     window-padding-balance = false
     window-padding-color = extend
 

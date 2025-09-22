@@ -5,42 +5,13 @@
 }:
 {
   services.flatpak.enable = true;
-
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk
-      xdg-desktop-portal-gnome
-    ];
-  };
-
-  # default handlers
-  xdg.terminal-exec = {
-    enable = true;
-    settings = {
-      default = [ "com.mitchellh.ghostty.desktop" ];
-    };
-  };
-
-  xdg.mime.defaultApplications = {
-    "x-scheme-handler/http" = "org.mozilla.firefox.desktop";
-    "x-scheme-handler/https" = "org.mozilla.firefox.desktop";
-    "x-scheme-handler/ftp" = "org.mozilla.firefox.desktop";
-    "x-scheme-handler/mailto" = "org.mozilla.thunderbird.desktop";
-    "text/plain" = "Helix.desktop";
-    "application/pdf" = "org.mozilla.firefox.desktop";
-    # "image/png" = [
-    #   "sxiv.desktop"
-    #   "gimp.desktop"
-    # ];
-  };
-
+  
   # set up chromium config for pwas
   programs.chromium = {
     enable = true;
     extensions = [
-      "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+      # "ddkjiahejlhfcafbddmgiahcphecmpfh" # ublock origin lite
+      "https://clients2.google.com/service/update2/crx?response=redirect&acceptformat=crx2,crx3&prodversion=${pkgs.ungoogled-chromium.version}&x=id%3Dddkjiahejlhfcafbddmgiahcphecmpfh%26installsource%3Dondemand%26uc"
     ];
     extraOpts = {
       "BrowserSignin" = 0;
@@ -54,23 +25,17 @@
   # Tell electron apps / chromium to use wayland
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   users.users.asa.packages = with pkgs; [
-    packages.ghostty-wrapped
+    packages.alacritty-wrapped
     packages.helix-wrapped
-    packages.mako-wrapped
-    packages.fuzzel-wrapped
-    wl-clipboard
-    # delete later
-    xwayland-satellite
 
+    aerc
     yazi
     wget
-    docker-compose
     ungoogled-chromium
 
-    alacritty
+    fzf
+    ripgrep
 
     # utilities
     zip
@@ -79,19 +44,15 @@
     btop
 
     # vpn stuff
-    networkmanager-openconnect
-    globalprotect-openconnect
+    # (globalprotect-openconnect.overrideAttrs rec {
+    #   version = "2.4.5";
+    #   src = fetchurl {
+    #     url = "https://github.com/yuezk/GlobalProtect-openconnect/releases/download/v${version}/globalprotect-openconnect-${version}.tar.gz";
+    #     hash = "sha256-ACeNZpHxSK+LkhxuSMOHjuLj5SK82WCOh53+Ai/NQFA=";
+    #   };
+    #   patchPhase = "";
 
-    # stuff that should be wrapped with helix
-    nixd
-    pyright
-    rust-analyzer
-    llvmPackages_19.clang-tools
-    nixfmt-rfc-style
-
-    # gnome core apps
-    adwaita-icon-theme
-    nautilus
+    # })
   ];
 
 }

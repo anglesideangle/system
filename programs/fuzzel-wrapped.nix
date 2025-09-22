@@ -4,7 +4,7 @@
   mkWrapper,
   theme,
   fuzzel,
-  ghostty-wrapped,
+  alacritty-wrapped,
 }:
 let
   cfg = pkgs.writeText "config.ini" ''
@@ -13,7 +13,7 @@ let
     dpi-aware=auto
     placeholder="system search..."
     prompt=""
-    terminal="${lib.getExe ghostty-wrapped} -e"
+    terminal="${lib.getExe alacritty-wrapped} -e"
 
     lines=12
     width=24

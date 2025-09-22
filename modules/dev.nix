@@ -1,4 +1,15 @@
-{ ... }:
+{ lib, pkgs, packages, ... }:
+# let container-env = pkgs.buildFHSEnv {
+#   name = "container-env";
+#   targetPkgs = pkgs: [
+#     pkgs.helix
+#   ];
+#   # paths = [ packages.helix-wrapped ];
+#   # includeClosures = true;
+#   # ignoreCollisions = true;
+#   # pathsToLink = " /bin "
+# };
+# in
 {
   programs.git = {
     enable = true;
@@ -12,8 +23,16 @@
   # programs.ssh.startAgent = true;
   programs.ssh.extraConfig = "SetEnv TERM=xterm-256color";
 
-  virtualisation.containers.enable = true;
-  # virtualisation.docker.enable = true;
+  virtualisation.containers = {
+    enable = true;
+
+    # containersConf.settings = {
+    #   containers = {
+    #     volumes = [ "/nix/store:/nix/store:ro" ];
+    #     env = [ "PATH=${lib.getBin container-env}:$\PATH" ];
+    #   };
+    # };
+  };
 
   virtualisation.podman = {
     enable = true;
@@ -26,8 +45,8 @@
 
   # Configure helix for editor and viewing functionality
   environment.variables = {
-    EDITOR = "hx";
-    VISUAL = "hx";
+    EDITOR = "${lib.getExe packages.helix-wrapped}";
+    VISUAL = "${lib.getExe packages.helix-wrapped}";
   };
 
   # Set up local llms

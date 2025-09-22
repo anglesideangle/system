@@ -5,7 +5,7 @@
   theme,
   niri,
   swaylock-wrapped,
-  ghostty-wrapped,
+  alacritty-wrapped,
   fuzzel-wrapped,
   wireplumber,
   brightnessctl,
@@ -87,7 +87,11 @@ let
     }
 
     output "DP-3" {
-        mode "3840x2160@30.000"
+        mode "2560x1440@60"
+
+        scale 1.25
+
+        background-color "#${theme.colors.bg-darker}"
     }
 
     // You can configure outputs by their name, which you can find
@@ -299,7 +303,7 @@ let
         // off
 
         // Slow down all animations by this factor. Values below 1 speed them up instead.
-        slowdown 0.8
+        slowdown 0.5
     }
 
     // Window rules let you adjust behavior for individual windows.
@@ -365,7 +369,7 @@ let
         Mod+Shift+Slash { show-hotkey-overlay; }
 
         // Suggested binds for running programs: terminal, app launcher, screen locker.
-        Mod+Return { spawn "${lib.getExe ghostty-wrapped}"; }
+        Mod+Return { spawn "${lib.getExe alacritty-wrapped}"; }
         Mod+D { spawn "${lib.getExe fuzzel-wrapped}"; }
         Mod+Shift+Return { spawn "${lib.getExe flatpak}" "run" "org.mozilla.firefox"; }
         Super+Alt+L { spawn "${lib.getExe swaylock-wrapped}"; }
