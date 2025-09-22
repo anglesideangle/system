@@ -19,7 +19,7 @@ let
         end-of-line-diagnostics = "hint";
         inline-diagnostics.cursor-line = "error";
 
-        lsp.display-inline-hints = true;
+        lsp.display-inlay-hints = true;
 
         cursor-shape = {
           insert = "bar";
