@@ -7,7 +7,10 @@
 let
   cfg = writers.writeTOML "alacritty.toml" {
     font = {
-      normal = { family = "JetBrains Mono"; style = "regular"; };
+      normal = {
+        family = "JetBrains Mono";
+        style = "regular";
+      };
       size = 10;
     };
 

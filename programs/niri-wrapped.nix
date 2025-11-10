@@ -1,34 +1,27 @@
 {
-  pkgs,
+  writeText,
   lib,
   mkWrapper,
   theme,
   niri,
-  swaylock-wrapped,
   alacritty-wrapped,
-  fuzzel-wrapped,
-  wireplumber,
-  brightnessctl,
-  flatpak,
+  chromium-wrapped,
+  noctalia-shell,
 }:
 let
-  cfg = pkgs.writeText "config.kdl" ''
+  cfg = writeText "config.kdl" ''
     // This config is in the KDL format: https://kdl.dev
     // "/-" comments out the following node.
     // Check the wiki for a full description of the configuration:
     // https://github.com/YaLTeR/niri/wiki/Configuration:-Overview
 
-    spawn-at-startup "xwayland-satellite"
-
-    // Temporary for xwayland
-    environment {
-        DISPLAY ":0"
-    }
-
     // Input device configuration.
     // Find the full list of options on the wiki:
     // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
     input {
+        // mod-key "Alt"
+        // mod-key-nested "Alt"
+        
         keyboard {
             xkb {
                 // You can set rules, model, layout, variant and options.
@@ -224,6 +217,16 @@ let
             inactive-color "#${theme.colors.gray}"
         }
 
+        default-column-display "normal"
+        
+        tab-indicator {
+            width 8
+            gap 4
+            length total-proportion=1.0
+            position "top"
+            place-within-column
+        }
+
         // You can enable drop shadows for windows.
         shadow {
             // Uncomment the next line to enable shadows.
@@ -267,10 +270,8 @@ let
         // Top and bottom struts will simply add outer gaps in addition to the area occupied by
         // layer-shell panels and regular gaps.
         struts {
-            // left 64
-            // right 64
-            // top 64
-            // bottom 64
+            // remove gaps from top bar
+            top -4
         }
     }
 
@@ -310,22 +311,12 @@ let
     // Find more information on the wiki:
     // https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
 
-    // Work around WezTerm's initial configure bug
-    // by setting an empty default-column-width.
-    window-rule {
-        // This regular expression is intentionally made as specific as possible,
-        // since this is the default config, and we want no false positives.
-        // You can get away with just app-id="wezterm" if you want.
-        match app-id=r#"^org\.wezfurlong\.wezterm$"#
-        default-column-width {}
-    }
-
-    // Open the Firefox picture-in-picture player as floating by default.
+    // Open the chromium-wrapped picture-in-picture player as floating by default.
     window-rule {
         // This app-id regular expression will work for both:
-        // - host Firefox (app-id is "firefox")
-        // - Flatpak Firefox (app-id is "org.mozilla.firefox")
-        match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+        // - host chromium-wrapped (app-id is "chromium-wrapped")
+        // - Flatpak chromium-wrapped (app-id is "org.mozilla.chromium-wrapped")
+        match app-id=r#""# title="^Picture in picture$"
         open-floating true
     }
 
@@ -370,24 +361,26 @@ let
 
         // Suggested binds for running programs: terminal, app launcher, screen locker.
         Mod+Return { spawn "${lib.getExe alacritty-wrapped}"; }
-        Mod+D { spawn "${lib.getExe fuzzel-wrapped}"; }
-        Mod+Shift+Return { spawn "${lib.getExe flatpak}" "run" "org.mozilla.firefox"; }
-        Super+Alt+L { spawn "${lib.getExe swaylock-wrapped}"; }
+        Mod+Shift+Return { spawn "${lib.getExe chromium-wrapped}"; }
 
         // You can also use a shell. Do this if you need pipes, multiple commands, etc.
         // Note: the entire command goes as a single argument in the end.
         // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
 
-        // Example volume keys mappings for PipeWire & WirePlumber.
-        // The allow-when-locked=true property makes them work even when the session is locked.
-        XF86AudioRaiseVolume allow-when-locked=true { spawn "${lib.getExe' wireplumber "wpctl"}" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.08+"; }
-        XF86AudioLowerVolume allow-when-locked=true { spawn "${lib.getExe' wireplumber "wpctl"}" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.08-"; }
-        XF86AudioMute        allow-when-locked=true { spawn "${lib.getExe' wireplumber "wpctl"}" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-        XF86AudioMicMute     allow-when-locked=true { spawn "${lib.getExe' wireplumber "wpctl"}" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-        XF86MonBrightnessDown allow-when-locked=true {spawn "${lib.getExe' brightnessctl "brightnessctl"}" "-e" "set" "10%-"; }
-        XF86MonBrightnessUp allow-when-locked=true {spawn "${lib.getExe brightnessctl}" "-e" "set" "+10%"; }
+        // Core Noctalia binds
+        Mod+D { spawn "${lib.getExe noctalia-shell}" "ipc" "call" "launcher" "toggle"; }
+        Mod+Space { spawn "${lib.getExe noctalia-shell}" "ipc" "call" "launcher" "toggle"; }
 
-        Mod+Ctrl+Shift+Alt+L { spawn "${lib.getExe flatpak}" "run" "org.mozilla.firefox" "--new-window" "https://www.linkedin.com/"; }
+        // Audio controls
+        XF86AudioRaiseVolume { spawn "${lib.getExe noctalia-shell}" "ipc" "call" "volume" "increase"; }
+        XF86AudioLowerVolume { spawn "${lib.getExe noctalia-shell}" "ipc" "call" "volume" "decrease"; }
+        XF86AudioMute { spawn "${lib.getExe noctalia-shell}" "ipc" "call" "volume" "muteOutput"; }
+
+        // Brightness controls
+        XF86MonBrightnessUp { spawn "${lib.getExe noctalia-shell}" "ipc" "call" "brightness" "increase"; }
+        XF86MonBrightnessDown { spawn "${lib.getExe noctalia-shell}" "ipc" "call" "brightness" "decrease"; }
+
+        Mod+Ctrl+Shift+Alt+L { spawn "${lib.getExe chromium-wrapped}" "--new-window" "https://www.linkedin.com/"; }
 
         Mod+Q { close-window; }
 
@@ -496,8 +489,6 @@ let
         // These binds are also affected by touchpad's natural-scroll, so these
         // example binds are "inverted", since we have natural-scroll enabled for
         // touchpads by default.
-        // Mod+TouchpadScrollDown { spawn "${lib.getExe' wireplumber "wpctl"}" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.02+"; }
-        // Mod+TouchpadScrollUp   { spawn "${lib.getExe' wireplumber "wpctl"}" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.02-"; }
 
         // You can refer to workspaces by index. However, keep in mind that
         // niri is a dynamic workspace system, so these commands are kind of
@@ -590,9 +581,9 @@ let
         Print { screenshot; }
         Ctrl+Print { screenshot-screen; }
         Alt+Print { screenshot-window; }
-        Super+P { screenshot; }
-        Ctrl+Super+P { screenshot-screen; }
-        Alt+Super+P { screenshot-window; }
+        Mod+P { screenshot; }
+        Ctrl+Mod+P { screenshot-screen; }
+        Alt+Mod+P { screenshot-window; }
 
         // Applications such as remote-desktop clients and software KVM switches may
         // request that niri stops processing the keyboard shortcuts defined here
@@ -612,12 +603,19 @@ let
         // moving the mouse or pressing any other key.
         Mod+Shift+P { power-off-monitors; }
     }
+
+    // noctalia settings
+    layer-rule {
+        match namespace="^quickshell-overview$"
+        place-within-backdrop true
+    }
+
+    debug {
+        honor-xdg-activation-with-invalid-serial
+    }
   '';
 in
 mkWrapper {
   pkg = niri;
-  niri.prependFlags = [
-    "--config"
-    "${cfg}"
-  ];
+  niri.env.NIRI_CONFIG = "${cfg}";
 }

@@ -1,4 +1,9 @@
-{ lib, pkgs, packages, ... }:
+{
+  lib,
+  pkgs,
+  packages,
+  ...
+}:
 # let container-env = pkgs.buildFHSEnv {
 #   name = "container-env";
 #   targetPkgs = pkgs: [
@@ -13,6 +18,7 @@
 {
   programs.git = {
     enable = true;
+    lfs.enable = true;
     config = {
       init.defaultBranch = "main";
       user.email = "asapaparo@gmail.com";
@@ -45,19 +51,20 @@
 
   # Configure helix for editor and viewing functionality
   environment.variables = {
-    EDITOR = "${lib.getExe packages.helix-wrapped}";
-    VISUAL = "${lib.getExe packages.helix-wrapped}";
+    EDITOR = "${lib.getExe pkgs.customPackages.helix-wrapped}";
+    VISUAL = "${lib.getExe pkgs.customPackages.helix-wrapped}";
   };
 
   # Set up local llms
-  services.ollama = {
-    enable = true;
-    # radeon 780M igpu = gfx1103
-    # gfx1100 is closest working target
-    rocmOverrideGfx = "11.0.0";
-    acceleration = "rocm";
-    # loadModels = [
-    #   "gemma3n:latest"
-    # ];
-  };
+  # services.ollama = {
+  #   enable = true;
+  #   # radeon 780M igpu = gfx1103
+  #   # gfx1100 is closest working target
+  #   rocmOverrideGfx = "11.0.0";
+  #   acceleration = "rocm";
+  #   # loadModels = [
+  #   #   "gemma3n:latest"
+  #   # ];
+  # };
+
 }

@@ -1,15 +1,16 @@
 {
-  ...
-}:
-{
   networking.hostName = "asa-fw"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # networking.wireless.iwd.enable = true;
+
+  # networking.useNetworkd = true;
+
+  # networking.useDHCP = false;
   networking.networkmanager = {
     enable = true;
-    wifi.backend = "wpa_supplicant";
+    # wifi.backend = "iwd";
   };
-  programs.nm-applet.enable = true; # cursed wifi widget
 
   # networking.firewall = {
   #   enable = true;

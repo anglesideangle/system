@@ -1,51 +1,126 @@
 {
+  lib,
   pkgs,
+  config,
+  modulesPath,
   ...
 }:
-
 {
-  nix.settings.trusted-users = [
-    "root"
-    "@wheel"
-  ];
+  # imports = [ "${modulesPath}/profiles/perlless.nix" ];
+  # stuff to remove perl
+  # system.disableInstallerTools = true;
+  system.tools.nixos-generate-config.enable = lib.mkDefault false;
+  environment.defaultPackages = lib.mkDefault [ ];
+  # documentation.info.enable = lib.mkDefault false;
+  # documentation.nixos.enable = lib.mkDefault false;
+
+
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+      "ca-derivations"
+    ];
+    trusted-users = [ "root" ];
+    allowed-users = [ "@wheel" ];
+    auto-optimise-store = true;
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "daily";
+  };
+
+  # nix.optimise = {
+  #   automatic = true;
+  #   dates = "daily";
+  # };
+
+  # improve laptop responsiveness during rebuilds
+  # nix.daemonCPUSchedPolicy = "idle";
+
+  # nix.channel.enable = false;
+  # nix.nixPath = [ "nixpkgs=/etc/nixos/nixpkgs" ];
+
+  # environment.etc = {
+  #   "nixos/nixpkgs".source = builtins.storePath pkgs.path;
+  # };
+
+  hardware.enableRedistributableFirmware = true;
+
+  documentation.man = {
+    enable = true;
+    man-db.enable = false;
+    mandoc.enable = true;
+  };
+
+  # nixpkgs.hostPlatform = {
+  #   system = "x86_64-linux";
+  #   gcc.arch = "znver4";
+  #   gcc.tune = "znver4";
+  # };
+
+  security.sudo.enable = false;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot = {
     enable = true;
-    configurationLimit = 10;
+    configurationLimit = 4;
   };
   boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.initrd.systemd.enable = true;
+
+  system.etc.overlay = {
+    enable = true;
+    mutable = true;
+  };
+
+  boot.tmp.cleanOnBoot = true;
+  boot.tmp.useTmpfs = true;
+  systemd.services.nix-daemon = {
+    environment.TMPDIR = "/var/tmp";
+  };
+
+  security.lockKernelModules = true;
+  security.protectKernelImage = true;
+
+  # will break / experimental
+  systemd.enableStrictShellChecks = true;
+
+  # i wonder if this is a good idea
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+  };
+
+  services.dbus.implementation = "broker";
+
+  # prevent freezing on high loads
+  services.irqbalance.enable = true;
+  services.earlyoom.enable = true;
+
+  programs.nh = {
+    enable = true;
+    flake = "/home/asa/system";
+  };
 
   # Set your time zone.
   time.timeZone = "America/New_York";
 
-  # why is this needed again?
-  systemd.user.extraConfig = ''
-    DefaultEnvironment="PATH=/run/current-system/sw/bin"
-  '';
-
-  # latest (not lts) kernel?
+  # latest (lts) kernel?
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  programs.nh = {
-    enable = true;
-    clean.enable = true;
-    clean.extraArgs = "--keep-since 4d --keep 3";
-    flake = "/home/asa/system";
-  };
+  # hardware.framework.enableKmod = false;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-
   # For framework
   services.fwupd.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # User accounts
+  # users.mutableUsers = false;
+  services.userborn.enable = true;
   users.users.asa = {
     isNormalUser = true;
     extraGroups = [
@@ -77,5 +152,4 @@
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "24.11"; # Did you read the comment?
-
 }
