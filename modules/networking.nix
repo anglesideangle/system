@@ -1,28 +1,43 @@
 {
-  networking.hostName = "asa-fw"; # Define your hostname.
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  # networking.wireless.iwd.enable = true;
+  # use systemd-resolved for dns
+  services.resolved.enable = true;
 
-  # networking.useNetworkd = true;
+  networking = {
+    hostName = "asa-fw";
 
-  # networking.useDHCP = false;
-  networking.networkmanager = {
-    enable = true;
-    # wifi.backend = "iwd";
+    # use systemd-networkd backend instead of scripted networking
+    useNetworkd = true;
+    # disable deprecated builtin dhcp (manually implemented below)
+    useDHCP = false;
+
+    wireless.enable = false;
+    networkmanager.enable = false;
+
+    wireless.iwd.enable = true;
+
+    firewall.enable = true;
   };
 
-  # networking.firewall = {
-  #   enable = true;
-  #   allowedUDPPorts = [11311];
-  # };
+  systemd.network = {
+    wait-online.enable = false;
 
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
+    networks = {
+      "20-wireless" = {
+        matchConfig.Type = "wlan";
+        networkConfig.DHCP = "yes";
+      };
 
-  # services.avahi = {
-  #   enable = true;
-  #   nssmdns4 = true;
-  #   openFirewall = true;
-  # };
+      "30-ethernet" = {
+        matchConfig.Type = "ether";
+        networkConfig.DHCP = "yes";
+      };
+    };
+  };
+
+  # systemd-networkd's dhcp client wants af_packet, but we enable protect
+  # lockKernelModules and protectKernelImage
+  boot.kernelModules = [ "af_packet" ];
+
+  services.avahi.enable = false;
+  services.printing.enable = false;
 }

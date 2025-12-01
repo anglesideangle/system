@@ -21,15 +21,15 @@
       "flakes"
       "ca-derivations"
     ];
-    trusted-users = [ "root" ];
+    trusted-users = [ "root" "asa" ];
     allowed-users = [ "@wheel" ];
     auto-optimise-store = true;
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "daily";
-  };
+  # nix.gc = {
+  #   automatic = true;
+  #   dates = "weekly";
+  # };
 
   # nix.optimise = {
   #   automatic = true;
@@ -46,7 +46,9 @@
   #   "nixos/nixpkgs".source = builtins.storePath pkgs.path;
   # };
 
-  hardware.enableRedistributableFirmware = true;
+  # hardware.enableAllFirmware = true;
+  # hardware.enableAllHardware = true;
+  # hardware.enableRedistributableFirmware = true;
 
   documentation.man = {
     enable = true;
@@ -63,8 +65,16 @@
   security.sudo.enable = false;
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot = {
+  # boot.loader.systemd-boot = {
+  #   enable = true;
+  #   configurationLimit = 4;
+  # };
+  environment.systemPackages = [
+    pkgs.sbctl
+  ];
+  boot.lanzaboote = {
     enable = true;
+    pkiBundle = "/var/lib/sbctl";
     configurationLimit = 4;
   };
   boot.loader.efi.canTouchEfiVariables = true;
@@ -82,11 +92,13 @@
     environment.TMPDIR = "/var/tmp";
   };
 
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   security.lockKernelModules = true;
   security.protectKernelImage = true;
 
   # will break / experimental
-  systemd.enableStrictShellChecks = true;
+  # systemd.enableStrictShellChecks = true;
 
   # i wonder if this is a good idea
   zramSwap = {
@@ -100,17 +112,12 @@
   services.irqbalance.enable = true;
   services.earlyoom.enable = true;
 
-  programs.nh = {
-    enable = true;
-    flake = "/home/asa/system";
-  };
-
   # Set your time zone.
   time.timeZone = "America/New_York";
 
   # latest (lts) kernel?
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  # hardware.framework.enableKmod = false;
+  # hardware.framework.enableKmod = true;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -151,5 +158,5 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 }

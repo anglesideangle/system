@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  packages,
   ...
 }:
 # set up chromium web "apps"
@@ -9,12 +8,12 @@ let
   webapps =
     let
       apps = {
-        discord = "https://discord.com/channels/@me";
-        slack = "https://app.slack.com/client/";
-        outlook = "https://outlook.office.com/mail/";
-        bluesky = "https://bsky.app/";
-        canvas = "https://canvas.mit.edu/";
-        gradescope = "https://www.gradescope.com/";
+        Discord = "https://discord.com/channels/@me";
+        Slack = "https://app.slack.com/client/";
+        Outlook = "https://outlook.office.com/mail/";
+        Bluesky = "https://bsky.app/";
+        Canvas = "https://canvas.mit.edu/";
+        Gradescope = "https://www.gradescope.com/";
       };
     in
     lib.mapAttrsToList (
@@ -22,13 +21,22 @@ let
       pkgs.makeDesktopItem {
         inherit name;
         desktopName = name;
-        exec = "${lib.getExe pkgs.customPackages.chromium-wrapped} --app=${url}";
+        exec = "${lib.getExe pkgs.customPackages.chromium-wrapped} --app=${url} --no-first-run --no-default-browser-check";
         terminal = false;
       }
     ) apps;
 in
 {
   services.flatpak.enable = true;
+
+  systemd.user.services.alacritty = {
+    description = "Alacritty Daemon";
+    wantedBy = [ "graphical.target" ];
+    serviceConfig = {
+      ExecStart = "${lib.getExe pkgs.customPackages.alacritty-wrapped} --daemon";
+      Restart = "on-failure";
+    };
+  };
 
   programs.chromium = {
     enable = true;
@@ -70,7 +78,7 @@ in
       "DefaultWebUsbGuardSetting" = 2;
       "DesktopSharingHubEnabled" = false;
       "DevToolsGenAiSettings" = 2;
-      "Disable3DAPIs" = true;
+      # "Disable3DAPIs" = true;
       "DnsOverHttpsMode" = "automatic";
       # "DnsOverHttpsTemplates"
       "EnableMediaRouter" = false;

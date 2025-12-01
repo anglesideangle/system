@@ -4,14 +4,13 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     hardware.url = "github:nixos/nixos-hardware/master";
-    quickshell = {
-      url = "github:outfoxxed/quickshell";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.quickshell.follows = "quickshell";
     };
     nixpak = {
       url = "github:nixpak/nixpak";
@@ -23,6 +22,7 @@
     {
       nixpkgs,
       hardware,
+      lanzaboote,
       noctalia,
       nixpak,
       ...
@@ -53,6 +53,7 @@
           modules/dev.nix
           hardware/fw-13.nix
           hardware.nixosModules.framework-13-7040-amd
+          lanzaboote.nixosModules.lanzaboote
           {
             nixpkgs.overlays = [
               (noctalia-overlay system)

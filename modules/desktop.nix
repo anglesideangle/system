@@ -60,6 +60,9 @@
   # enable polkit auth agent
   security.soteria.enable = true;
 
+  # enable gnome keyring
+  services.gnome.gnome-keyring.enable = true;
+
   # some gnome settings (dark mode)
   programs.dconf.profiles.user.databases = [
     {
