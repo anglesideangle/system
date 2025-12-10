@@ -79,7 +79,7 @@ let
         // focus-follows-mouse max-scroll-amount="0%"
     }
 
-    output "DP-3" {
+    output "DP-4" {
         mode "2560x1440@60"
 
         scale 1.25

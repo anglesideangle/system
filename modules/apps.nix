@@ -11,6 +11,8 @@ let
         Discord = "https://discord.com/channels/@me";
         Slack = "https://app.slack.com/client/";
         Outlook = "https://outlook.office.com/mail/";
+        Gmail = "http://mail.google.com/mail/u/0/";
+        "Google Calendar" = "https://calendar.google.com/calendar/u/0/";
         Bluesky = "https://bsky.app/";
         Canvas = "https://canvas.mit.edu/";
         Gradescope = "https://www.gradescope.com/";

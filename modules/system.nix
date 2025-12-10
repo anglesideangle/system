@@ -1,8 +1,6 @@
 {
   lib,
   pkgs,
-  config,
-  modulesPath,
   ...
 }:
 {
@@ -80,6 +78,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = true;
+  system.nixos-init.enable = true; # bashless init
 
   system.etc.overlay = {
     enable = true;
@@ -130,9 +129,10 @@
   services.userborn.enable = true;
   users.users.asa = {
     isNormalUser = true;
+    shell = pkgs.nushell;
     extraGroups = [
       "wheel"
-      "networkmanager"
+      # "networkmanager"
       "video"
       "kvm"
       "dialout"
@@ -140,6 +140,11 @@
   };
 
   hardware.graphics.enable = true;
+
+  programs.nh = {
+    enable = true;
+    flake = "/home/asa/system";
+  };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

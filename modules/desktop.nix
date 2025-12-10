@@ -106,4 +106,11 @@
     #   "gimp.desktop"
     # ];
   };
+
+  # configure default editor
+  environment.variables = {
+    EDITOR = "${lib.getExe pkgs.customPackages.helix-wrapped}";
+    PAGER = "${lib.getExe pkgs.customPackages.helix-wrapped}";
+    MANPAGER = "${lib.getExe pkgs.customPackages.helix-wrapped}";
+  };
 }

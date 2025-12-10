@@ -52,11 +52,6 @@
 
   programs.direnv.enable = true;
 
-  environment.variables = {
-    EDITOR = "${lib.getExe pkgs.customPackages.helix-wrapped}";
-    VISUAL = "${lib.getExe pkgs.customPackages.helix-wrapped}";
-  };
-
   # services.ollama = {
   #   enable = true;
   #   # radeon 780M igpu = gfx1103
