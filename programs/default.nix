@@ -8,4 +8,5 @@ pkgs.lib.makeScope pkgs.newScope (
   // pkgs.lib.packagesFromDirectoryRecursive {
     inherit (self) callPackage;
     directory = ./.;
-  })
+  }
+)

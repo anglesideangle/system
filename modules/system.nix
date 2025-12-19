@@ -12,14 +12,14 @@
   # documentation.info.enable = lib.mkDefault false;
   # documentation.nixos.enable = lib.mkDefault false;
 
-
   nix.settings = {
     experimental-features = [
       "nix-command"
       "flakes"
       "ca-derivations"
+      "auto-allocate-uids"
     ];
-    trusted-users = [ "root" "asa" ];
+    trusted-users = [ "root" ];
     allowed-users = [ "@wheel" ];
     auto-optimise-store = true;
   };
@@ -60,6 +60,24 @@
   #   gcc.tune = "znver4";
   # };
 
+  # agressively optimize rust packages
+  #
+  # this is done because safe rust is assumed to avoid UB within the rust
+  # compiler's vm model, and unsafe rust must be extensively validated against
+  # miri or formally verified to not violate the assumptions of this vm
+  #
+  # the same guarantees cannot be made for c or c++
+  # nixpkgs.overlays = [
+  #   (final: prev: {
+  #     rustPlatform = prev.rustPlatform // {
+  #       buildRustPackage = args: prev.rustPlatform.buildRustPackage (args // {
+  #         # Append the aggressive flags to any existing RUSTFLAGS
+  #         RUSTFLAGS = (args.RUSTFLAGS or "") + " -C lto=fat -C codegen-units=1 -C target-cpu=native -C opt-level=3";
+  #       });
+  #     };
+  #   })
+  # ];
+
   security.sudo.enable = false;
 
   # Use the systemd-boot EFI boot loader.
@@ -69,6 +87,7 @@
   # };
   environment.systemPackages = [
     pkgs.sbctl
+    pkgs.nushell # TODO
   ];
   boot.lanzaboote = {
     enable = true;
@@ -125,19 +144,18 @@
   services.fwupd.enable = true;
 
   # User accounts
-  # users.mutableUsers = false;
-  services.userborn.enable = true;
-  users.users.asa = {
-    isNormalUser = true;
-    shell = pkgs.nushell;
-    extraGroups = [
-      "wheel"
-      # "networkmanager"
-      "video"
-      "kvm"
-      "dialout"
-    ];
+  users.mutableUsers = false;
+  users.allowNoPasswordLogin = true;
+  systemd.sysusers.enable = true;
+  services.homed = {
+    enable = true;
+    settings.Home = {
+      DefaultFileSystemType = "btrfs";
+      DefaultStorage = "luks";
+    };
   };
+
+  environment.shells = [ pkgs.nushell ];
 
   hardware.graphics.enable = true;
 

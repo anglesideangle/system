@@ -9,7 +9,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell/v3.5.0";
+      url = "github:noctalia-dev/noctalia-shell/v3.7.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpak = {
@@ -69,11 +69,14 @@
 
       packages = forAllSystems (pkgs: import ./programs { inherit pkgs; });
 
-      devShell = forAllSystems (pkgs: pkgs.mkShellNoCC {
-        packages = [
-          pkgs.nixd
-        ];
-      });
+      devShell = forAllSystems (
+        pkgs:
+        pkgs.mkShellNoCC {
+          packages = [
+            pkgs.nixd
+          ];
+        }
+      );
 
       formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
     };

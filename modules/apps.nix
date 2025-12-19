@@ -3,31 +3,6 @@
   pkgs,
   ...
 }:
-# set up chromium web "apps"
-let
-  webapps =
-    let
-      apps = {
-        Discord = "https://discord.com/channels/@me";
-        Slack = "https://app.slack.com/client/";
-        Outlook = "https://outlook.office.com/mail/";
-        Gmail = "http://mail.google.com/mail/u/0/";
-        "Google Calendar" = "https://calendar.google.com/calendar/u/0/";
-        Bluesky = "https://bsky.app/";
-        Canvas = "https://canvas.mit.edu/";
-        Gradescope = "https://www.gradescope.com/";
-      };
-    in
-    lib.mapAttrsToList (
-      name: url:
-      pkgs.makeDesktopItem {
-        inherit name;
-        desktopName = name;
-        exec = "${lib.getExe pkgs.customPackages.chromium-wrapped} --app=${url} --no-first-run --no-default-browser-check";
-        terminal = false;
-      }
-    ) apps;
-in
 {
   services.flatpak.enable = true;
 
@@ -35,7 +10,7 @@ in
     description = "Alacritty Daemon";
     wantedBy = [ "graphical.target" ];
     serviceConfig = {
-      ExecStart = "${lib.getExe pkgs.customPackages.alacritty-wrapped} --daemon";
+      ExecStart = "${lib.getExe pkgs.alacritty} --daemon";
       Restart = "on-failure";
     };
   };
@@ -217,10 +192,9 @@ in
   #   };
   # };
 
-  users.users.asa.packages = [
-    pkgs.customPackages.alacritty-wrapped
+  environment.systemPackages = [
+    pkgs.alacritty
     pkgs.customPackages.helix-wrapped
-    pkgs.customPackages.chromium-wrapped
 
     # aerc
     # yazi
@@ -234,7 +208,5 @@ in
     # unzip
     # zathura
     # btop
-  ]
-  ++ webapps;
-
+  ];
 }

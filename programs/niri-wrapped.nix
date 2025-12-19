@@ -219,11 +219,14 @@ let
 
         default-column-display "normal"
         
+        // tab-indicator {
+        //     width 8
+        //     gap 4
+        //     length total-proportion=1.0
+        //     position "top"
+        //     place-within-column
+        // }
         tab-indicator {
-            width 8
-            gap 4
-            length total-proportion=1.0
-            position "top"
             place-within-column
         }
 
@@ -269,10 +272,10 @@ let
         // Left and right struts will cause the next window to the side to always be visible.
         // Top and bottom struts will simply add outer gaps in addition to the area occupied by
         // layer-shell panels and regular gaps.
-        struts {
-            // remove gaps from top bar
-            top -4
-        }
+        // struts {
+        //     // remove gaps from top bar
+        //     top -4
+        // }
     }
 
     // Add lines like this to spawn processes at startup.

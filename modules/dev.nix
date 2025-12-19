@@ -21,15 +21,15 @@
   '';
 
   # add subuid and subguid ranges, necessary for rootless podman
-  environment.etc."subuid" = {
-    text = "asa:100000:65536";
-    mode = "0644";
-  };
-  
-  environment.etc."subgid" = {
-    text = "asa:100000:65536";
-    mode = "0644";
-  };
+  # environment.etc."subuid" = {
+  #   text = "asa:100000:65536";
+  #   mode = "0644";
+  # };
+
+  # environment.etc."subgid" = {
+  #   text = "asa:100000:65536";
+  #   mode = "0644";
+  # };
 
   boot.kernelModules = [ "tun" ];
 
@@ -39,8 +39,8 @@
 
     # tell shells inside containers that we are running a 256 bit color xterm
     containersConf.settings = {
-      TERM="xterm-256color";
-      COLORTERM="truecolor";
+      TERM = "xterm-256color";
+      COLORTERM = "truecolor";
     };
   };
 

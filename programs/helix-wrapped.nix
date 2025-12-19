@@ -5,7 +5,7 @@
 }:
 let
   cfg = writers.writeTOML "config.toml" {
-    theme = "zed_onedark";
+    theme = "rose_pine";
 
     keys.normal = {
       tab = "goto_next_buffer";
