@@ -81,7 +81,7 @@ let
 
     let
       # all keyword kwargs are bins
-      binaries = builtins.removeAttrs args [
+      binaries = removeAttrs args [
         "pkg"
         "pname"
         "version"
@@ -109,8 +109,8 @@ let
         in
         ''
           wrapProgram $out/bin/${bin} \
-            --add-flags "${builtins.toString prependFlags}" \
-            --append-flags "${builtins.toString appendFlags}" \
+            --add-flags "${toString prependFlags}" \
+            --append-flags "${toString appendFlags}" \
             ${envArgs}
         ''
       ) binaries;

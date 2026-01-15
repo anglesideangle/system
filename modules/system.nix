@@ -88,11 +88,13 @@
   environment.systemPackages = [
     pkgs.sbctl
     pkgs.nushell # TODO
+    pkgs.carapace
   ];
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
     configurationLimit = 4;
+    autoEnrollKeys.enable = true;
   };
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -112,7 +114,8 @@
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
-  security.lockKernelModules = true;
+  # security.lockKernelModules = true;
+  # ^ breaks a lot of stuff
   security.protectKernelImage = true;
 
   # will break / experimental

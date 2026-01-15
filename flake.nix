@@ -3,13 +3,17 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixos-facter-compat = {
+    #   url = "git+https://codeberg.org/boneraven/nixos-facter-compat.git?ref=main";
+    #   flake = false;
+    # };
     hardware.url = "github:nixos/nixos-hardware/master";
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.3";
+      url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell/v3.7.1";
+      url = "github:noctalia-dev/noctalia-shell/v4.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpak = {
@@ -21,6 +25,7 @@
   outputs =
     {
       nixpkgs,
+      # nixos-facter-compat,
       hardware,
       lanzaboote,
       noctalia,
@@ -64,6 +69,7 @@
               })
             ];
           }
+          modules/lock-in.nix
         ];
       };
 
@@ -79,5 +85,7 @@
       );
 
       formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
+
+      templates = import ./templates;
     };
 }

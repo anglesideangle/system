@@ -163,15 +163,8 @@
       // Find more information on the wiki:
       // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
       layout {
-          // Set gaps around windows in logical pixels.
           gaps 4
 
-          // When to center a column when changing focus, options are:
-          // - "never", default behavior, focusing an off-screen column will keep at the left
-          //   or right edge of the screen.
-          // - "always", the focused column will always be centered.
-          // - "on-overflow", focusing a column will center it if it doesn't fit
-          //   together with the previously focused column.
           center-focused-column "never"
 
           // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
@@ -207,12 +200,13 @@
           // `draw-border-with-background`.
 
           focus-ring {
-              off
+            off
+            width 1
           }
 
           border {
             on
-            width 2
+            width 1
           }
 
           default-column-display "normal"
@@ -251,8 +245,16 @@
       // Example: enable rounded corners for all windows.
       // (This example rule is commented out with a "/-" in front.)
       window-rule {
-          geometry-corner-radius 8
+          geometry-corner-radius 4
           clip-to-geometry true
+      }
+
+      // Shadows behind floating windows
+      window-rule {
+        match is-floating=true
+        shadow {
+          on
+        }
       }
 
       binds {
@@ -445,7 +447,7 @@
           Mod+Shift+R { switch-preset-window-height; }
           Mod+Ctrl+R { reset-window-height; }
           Mod+F { maximize-column; }
-          Mod+Shift+F { fullscreen-window; }
+          Mod+Shift+F { maximize-window-to-edges; }
 
           // Expand the focused column to space not taken up by other fully visible columns.
           // Makes the column "fill the rest of the space".
@@ -587,7 +589,7 @@
   # configure default editor
   environment.variables = {
     EDITOR = "${lib.getExe pkgs.customPackages.helix-wrapped}";
-    PAGER = "${lib.getExe pkgs.customPackages.helix-wrapped}";
-    MANPAGER = "${lib.getExe pkgs.customPackages.helix-wrapped}";
+    # PAGER = "${lib.getExe pkgs.customPackages.helix-wrapped}";
+    # MANPAGER = "${lib.getExe pkgs.customPackages.helix-wrapped}";
   };
 }

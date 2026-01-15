@@ -16,6 +16,8 @@ let
         Bluesky = "https://bsky.app/";
         Canvas = "https://canvas.mit.edu/";
         Gradescope = "https://www.gradescope.com/";
+        Google = "https://www.google.com/";
+        Gemini = "https://gemini.google.com";
       };
     in
     lib.mapAttrsToList (

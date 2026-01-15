@@ -20,19 +20,6 @@
     SetEnv COLORTERM=truecolor
   '';
 
-  # add subuid and subguid ranges, necessary for rootless podman
-  # environment.etc."subuid" = {
-  #   text = "asa:100000:65536";
-  #   mode = "0644";
-  # };
-
-  # environment.etc."subgid" = {
-  #   text = "asa:100000:65536";
-  #   mode = "0644";
-  # };
-
-  boot.kernelModules = [ "tun" ];
-
   virtualisation.containers = {
     enable = true;
     # ociSeccompBpfHook.enable = true;
@@ -44,11 +31,19 @@
     };
   };
 
-  virtualisation.podman = {
+  # docker used instead of podman because podman is currently incompatible
+  # with systemd-homed https://github.com/containers/podman/issues/20040#issuecomment-1731335711
+  virtualisation.docker = {
     enable = true;
-    dockerCompat = true;
-    dockerSocket.enable = true;
+    enableOnBoot = false;
+    autoPrune.enable = true;
   };
+
+  # virtualisation.podman = {
+  #   enable = true;
+  #   dockerCompat = true;
+  #   dockerSocket.enable = true;
+  # };
 
   programs.direnv.enable = true;
 

@@ -10,10 +10,12 @@
     # disable deprecated builtin dhcp (manually implemented below)
     useDHCP = false;
 
-    wireless.enable = false;
-    networkmanager.enable = false;
-
-    wireless.iwd.enable = true;
+    networkmanager = {
+      enable = true;
+      # wifi.powersave = true;
+      dns = "systemd-resolved";
+      dhcp = "internal"; # would be better as systemd-networkd, I believe nm vendors in the networkd dhcp server regardless
+    };
 
     firewall.enable = true;
   };
@@ -35,8 +37,8 @@
   };
 
   # systemd-networkd's dhcp client wants af_packet, but we enable protect
-  # lockKernelModules and protectKernelImage
-  boot.kernelModules = [ "af_packet" ];
+  # lockKernelModules
+  # boot.kernelModules = [ "af_packet" ];
 
   services.avahi.enable = false;
   services.printing.enable = false;
