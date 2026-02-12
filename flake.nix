@@ -3,17 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    # nixos-facter-compat = {
-    #   url = "git+https://codeberg.org/boneraven/nixos-facter-compat.git?ref=main";
-    #   flake = false;
-    # };
     hardware.url = "github:nixos/nixos-hardware/master";
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell/v4.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpak = {
@@ -24,26 +16,29 @@
 
   outputs =
     {
+      self,
       nixpkgs,
-      # nixos-facter-compat,
       hardware,
       lanzaboote,
-      noctalia,
       nixpak,
       ...
     }@inputs:
     let
-      noctalia-overlay = system: final: prev: { noctalia-shell = noctalia.packages.${system}.default; };
-      forAllSystems =
-        function:
-        nixpkgs.lib.genAttrs [
-          "x86_64-linux" # <- useful
-          "aarch64-linux" # <- aspirational
-          "aarch64-darwin" # <- useless
-        ] (system: function (nixpkgs.legacyPackages.${system}.extend (noctalia-overlay system)));
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      pkgsFor = forAllSystems (
+        system:
+        import nixpkgs {
+          inherit system;
+        }
+      );
     in
     {
-      nixosConfigurations.asa-fw = nixpkgs.lib.nixosSystem rec {
+      nixosConfigurations.asa-fw = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
@@ -61,7 +56,6 @@
           lanzaboote.nixosModules.lanzaboote
           {
             nixpkgs.overlays = [
-              (noctalia-overlay system)
               (final: prev: {
                 customPackages = import ./programs {
                   pkgs = prev;
@@ -69,22 +63,21 @@
               })
             ];
           }
-          modules/lock-in.nix
         ];
       };
 
-      packages = forAllSystems (pkgs: import ./programs { inherit pkgs; });
+      packages = forAllSystems (system: import ./programs { pkgs = pkgsFor.${system}; });
 
-      devShell = forAllSystems (
-        pkgs:
-        pkgs.mkShellNoCC {
+      devShells = forAllSystems (system: {
+        default = pkgsFor.${system}.mkShellNoCC {
           packages = [
-            pkgs.nixd
+            pkgsFor.${system}.nixd
+            self.formatter.${system}
           ];
-        }
-      );
+        };
+      });
 
-      formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
+      formatter = forAllSystems (system: pkgsFor.${system}.nixfmt-tree);
 
       templates = import ./templates;
     };

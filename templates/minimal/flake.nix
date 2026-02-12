@@ -12,26 +12,26 @@
         "aarch64-darwin"
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgs = forAllSystems (system: import nixpkgs { inherit system; });
+      pkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
     in
     {
       packages = forAllSystems (system: {
-        default = pkgs.${system}.hello;
+        default = pkgsFor.${system}.hello;
       });
 
       devShells = forAllSystems (system: {
-        default = pkgs.${system}.mkShellNoCC {
-          inputsFrom = builtins.attrValuesself.packages.${system};
+        default = pkgsFor.${system}.mkShellNoCC {
+          inputsFrom = builtins.attrValues self.packages.${system} ++ [ self.formatter.${system} ];
           packages = [ self.formatter.${system} ];
         };
       });
 
       formatter = forAllSystems (
         system:
-        pkgs.${system}.treefmt.withConfig {
+        pkgsFor.${system}.treefmt.withConfig {
           name = "project-format";
 
-          runtimeInputs = with pkgs.${system}; [
+          runtimeInputs = with pkgsFor.${system}; [
             nixfmt
           ];
 

@@ -22,6 +22,7 @@
     trusted-users = [ "root" ];
     allowed-users = [ "@wheel" ];
     auto-optimise-store = true;
+    pure-eval = true;
   };
 
   # nix.gc = {
@@ -39,10 +40,6 @@
 
   # nix.channel.enable = false;
   # nix.nixPath = [ "nixpkgs=/etc/nixos/nixpkgs" ];
-
-  # environment.etc = {
-  #   "nixos/nixpkgs".source = builtins.storePath pkgs.path;
-  # };
 
   # hardware.enableAllFirmware = true;
   # hardware.enableAllHardware = true;
@@ -72,7 +69,7 @@
   #     rustPlatform = prev.rustPlatform // {
   #       buildRustPackage = args: prev.rustPlatform.buildRustPackage (args // {
   #         # Append the aggressive flags to any existing RUSTFLAGS
-  #         RUSTFLAGS = (args.RUSTFLAGS or "") + " -C lto=fat -C codegen-units=1 -C target-cpu=native -C opt-level=3";
+  #         RUSTFLAGS = (args.RUSTFLAGS or "") + " -C lto=thin -C codegen-units=1 -C target-cpu=native -C opt-level=3";
   #       });
   #     };
   #   })
@@ -121,7 +118,6 @@
   # will break / experimental
   # systemd.enableStrictShellChecks = true;
 
-  # i wonder if this is a good idea
   zramSwap = {
     enable = true;
     algorithm = "zstd";
@@ -166,6 +162,17 @@
     enable = true;
     flake = "/home/asa/system";
   };
+
+  # compatibility hacks
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      glib
+      zlib
+    ];
+  };
+  services.envfs.enable = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

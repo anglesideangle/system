@@ -1,17 +1,28 @@
 {
-  inputs,
   lib,
   pkgs,
   ...
 }:
 {
-  imports = [
-    inputs.noctalia.nixosModules.default
-  ];
-
-  services.noctalia-shell.enable = true;
-
   programs.niri.enable = true;
+
+  systemd.user.services.noctalia-shell = {
+    description = "Noctalia Shell - Wayland desktop shell";
+    documentation = [ "https://docs.noctalia.dev/docs" ];
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    restartTriggers = [ pkgs.noctalia-shell ];
+
+    environment = {
+      PATH = lib.mkForce null;
+    };
+
+    serviceConfig = {
+      ExecStart = lib.getExe pkgs.noctalia-shell;
+      Restart = "on-failure";
+    };
+  };
 
   services.greetd = {
     enable = true;
@@ -43,7 +54,7 @@
   # niri + noctalia config
   environment.etc."niri/config.kdl".text =
     let
-      noctalia = lib.getExe pkgs.noctalia-shell;
+      noctalia = "/run/current-system/sw/bin/noctalia-shell";
     in
     ''
       input {
@@ -125,7 +136,7 @@
           // so to put another output directly adjacent to it on the right, set its x to 1920.
           // If the position is unset or results in an overlap, the output is instead placed
           // automatically.
-          // position x=1280 y=0
+          // position x=2048 y=0
       }
 
       output "DP-3" {
@@ -156,7 +167,7 @@
           // so to put another output directly adjacent to it on the right, set its x to 1920.
           // If the position is unset or results in an overlap, the output is instead placed
           // automatically.
-          // position x=1280 y=0
+          // position x=0 y=0
       }
 
       // Settings that influence how windows are positioned and sized.
@@ -491,8 +502,8 @@
           Ctrl+Print { screenshot-screen; }
           Alt+Print { screenshot-window; }
           Mod+P { screenshot; }
-          Ctrl+Mod+P { screenshot-screen; }
-          Alt+Mod+P { screenshot-window; }
+          Alt+Mod+P { screenshot-screen; }
+          Shift+Mod+P { screenshot-window; }
 
           // Applications such as remote-desktop clients and software KVM switches may
           // request that niri stops processing the keyboard shortcuts defined here
@@ -510,7 +521,7 @@
 
           // Powers off the monitors. To turn them back on, do any input like
           // moving the mouse or pressing any other key.
-          Mod+Shift+P { power-off-monitors; }
+          // Mod+Shift+P { power-off-monitors; }
       }
 
       // noctalia settings
@@ -529,7 +540,6 @@
   environment.systemPackages = with pkgs; [
     noctalia-shell
     adwaita-icon-theme
-    # gnome-themes-extra
     nautilus
     wl-clipboard
   ];

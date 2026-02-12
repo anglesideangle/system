@@ -17,3 +17,5 @@
 !/utils/**
 !/templates/
 !/templates/**
+
+.direnv/

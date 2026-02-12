@@ -18,6 +18,7 @@ let
         Gradescope = "https://www.gradescope.com/";
         Google = "https://www.google.com/";
         Gemini = "https://gemini.google.com";
+        ChatGPT = "https://chatgpt.com";
       };
     in
     lib.mapAttrsToList (
