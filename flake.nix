@@ -1,5 +1,5 @@
 {
-  description = "Asa's personal NixOS configuration";
+  description = "OS Configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -8,21 +8,15 @@
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpak = {
-      url = "github:nixpak/nixpak";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
     {
       self,
       nixpkgs,
-      hardware,
       lanzaboote,
-      nixpak,
       ...
-    }@inputs:
+    }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -38,35 +32,21 @@
       );
     in
     {
-      nixosConfigurations.asa-fw = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
+      nixosModules = {
+        default = {
+          imports = [
+            modules/generic.nix
+            modules/boot.nix
+            modules/desktop.nix
+            modules/apps.nix
+            modules/fonts.nix
+            modules/networking.nix
+            modules/audio.nix
+            modules/dev.nix
+            lanzaboote.nixosModules.lanzaboote
+          ];
         };
-        modules = [
-          modules/system.nix
-          modules/desktop.nix
-          modules/apps.nix
-          modules/fonts.nix
-          modules/networking.nix
-          modules/audio.nix
-          modules/dev.nix
-          hardware/fw-13.nix
-          hardware.nixosModules.framework-13-7040-amd
-          lanzaboote.nixosModules.lanzaboote
-          {
-            nixpkgs.overlays = [
-              (final: prev: {
-                customPackages = import ./programs {
-                  pkgs = prev;
-                };
-              })
-            ];
-          }
-        ];
       };
-
-      packages = forAllSystems (system: import ./programs { pkgs = pkgsFor.${system}; });
 
       devShells = forAllSystems (system: {
         default = pkgsFor.${system}.mkShellNoCC {
@@ -78,7 +58,5 @@
       });
 
       formatter = forAllSystems (system: pkgsFor.${system}.nixfmt-tree);
-
-      templates = import ./templates;
     };
 }

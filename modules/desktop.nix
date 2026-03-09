@@ -12,7 +12,7 @@
     after = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     wantedBy = [ "graphical-session.target" ];
-    restartTriggers = [ pkgs.noctalia-shell ];
+    # restartTriggers = [ pkgs.noctalia-shell ];
 
     environment = {
       PATH = lib.mkForce null;
@@ -54,7 +54,7 @@
   # niri + noctalia config
   environment.etc."niri/config.kdl".text =
     let
-      noctalia = "/run/current-system/sw/bin/noctalia-shell";
+      noctalia = lib.getExe pkgs.noctalia-shell;
     in
     ''
       input {
@@ -68,11 +68,6 @@
           }
 
           touchpad {
-              // off
-              // tap
-              // dwt
-              // dwtp
-              // drag-lock
               natural-scroll
               // accel-speed 0.2
               accel-profile "adaptive"
@@ -101,191 +96,13 @@
           }
       }
 
-      output "DP-4" {
-          mode "2560x1440@60"
-
-          scale 1.25
-
-      }
-
-      output "eDP-1" {
-          // Uncomment this line to disable this output.
-          // off
-
-          // Resolution and, optionally, refresh rate of the output.
-          // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
-          // If the refresh rate is omitted, niri will pick the highest refresh rate
-          // for the resolution.
-          // If the mode is omitted altogether or is invalid, niri will pick one automatically.
-          // Run `niri msg outputs` while inside a niri instance to list all outputs and their modes.
-          mode "2256x1504@60"
-
-          // You can use integer or fractional scale, for example use 1.5 for 150% scale.
-          scale 1.5
-
-          // Transform allows to rotate the output counter-clockwise, valid values are:
-          // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
-          transform "normal"
-
-          // Position of the output in the global coordinate space.
-          // This affects directional monitor actions like "focus-monitor-left", and cursor movement.
-          // The cursor can only move between directly adjacent outputs.
-          // Output scale and rotation has to be taken into account for positioning:
-          // outputs are sized in logical, or scaled, pixels.
-          // For example, a 3840×2160 output with scale 2.0 will have a logical size of 1920×1080,
-          // so to put another output directly adjacent to it on the right, set its x to 1920.
-          // If the position is unset or results in an overlap, the output is instead placed
-          // automatically.
-          // position x=2048 y=0
-      }
-
-      output "DP-3" {
-          // Uncomment this line to disable this output.
-          // off
-
-          // Resolution and, optionally, refresh rate of the output.
-          // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
-          // If the refresh rate is omitted, niri will pick the highest refresh rate
-          // for the resolution.
-          // If the mode is omitted altogether or is invalid, niri will pick one automatically.
-          // Run `niri msg outputs` while inside a niri instance to list all outputs and their modes.
-          mode "2560x1440@60"
-
-          // You can use integer or fractional scale, for example use 1.5 for 150% scale.
-          scale 1.25
-
-          // Transform allows to rotate the output counter-clockwise, valid values are:
-          // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
-          transform "normal"
-
-          // Position of the output in the global coordinate space.
-          // This affects directional monitor actions like "focus-monitor-left", and cursor movement.
-          // The cursor can only move between directly adjacent outputs.
-          // Output scale and rotation has to be taken into account for positioning:
-          // outputs are sized in logical, or scaled, pixels.
-          // For example, a 3840×2160 output with scale 2.0 will have a logical size of 1920×1080,
-          // so to put another output directly adjacent to it on the right, set its x to 1920.
-          // If the position is unset or results in an overlap, the output is instead placed
-          // automatically.
-          // position x=0 y=0
-      }
-
-      // Settings that influence how windows are positioned and sized.
-      // Find more information on the wiki:
-      // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
-      layout {
-          gaps 4
-
-          center-focused-column "never"
-
-          // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
-          preset-column-widths {
-              // Proportion sets the width as a fraction of the output width, taking gaps into account.
-              // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
-              // The default preset widths are 1/3, 1/2 and 2/3 of the output.
-              proportion 0.33333
-              proportion 0.5
-              proportion 0.66667
-
-              // Fixed sets the width in logical pixels exactly.
-              // fixed 1920
-          }
-
-          // You can also customize the heights that "switch-preset-window-height" (Mod+Shift+R) toggles between.
-          // preset-window-heights { }
-
-          // You can change the default width of the new windows.
-          default-column-width { proportion 0.5; }
-          // If you leave the brackets empty, the windows themselves will decide their initial width.
-          // default-column-width {}
-
-          // By default focus ring and border are rendered as a solid background rectangle
-          // behind windows. That is, they will show up through semitransparent windows.
-          // This is because windows using client-side decorations can have an arbitrary shape.
-          //
-          // If you don't like that, you should uncomment `prefer-no-csd` below.
-          // Niri will draw focus ring and border *around* windows that agree to omit their
-          // client-side decorations.
-          //
-          // Alternatively, you can override it with a window rule called
-          // `draw-border-with-background`.
-
-          focus-ring {
-            off
-            width 1
-          }
-
-          border {
-            on
-            width 1
-          }
-
-          default-column-display "normal"
-      }
-
-      prefer-no-csd
-
-      // You can change the path where screenshots are saved.
-      // A ~ at the front will be expanded to the home directory.
-      // The path is formatted with strftime(3) to give you the screenshot date and time.
       screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
-      // You can also set this to null to disable saving screenshots to disk.
-      // screenshot-path null
-
-      // Animation settings.
-      // The wiki explains how to configure individual animations:
-      // https://github.com/YaLTeR/niri/wiki/Configuration:-Animations
-      animations {
-          // Uncomment to turn off all animations.
-          // off
-
-          // Slow down all animations by this factor. Values below 1 speed them up instead.
-          slowdown 0.5
-      }
-
-      // Window rules let you adjust behavior for individual windows.
-      // Find more information on the wiki:
-      // https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
-
-      window-rule {
-          match app-id=r#""# title="^Picture in picture$"
-          open-floating true
-      }
-
-      // Example: enable rounded corners for all windows.
-      // (This example rule is commented out with a "/-" in front.)
-      window-rule {
-          geometry-corner-radius 4
-          clip-to-geometry true
-      }
-
-      // Shadows behind floating windows
-      window-rule {
-        match is-floating=true
-        shadow {
-          on
-        }
-      }
-
       binds {
-          // Keys consist of modifiers separated by + signs, followed by an XKB key name
-          // in the end. To find an XKB name for a particular key, you may use a program
-          // like wev.
-          //
-          // "Mod" is a special modifier equal to Super when running on a TTY, and to Alt
-          // when running as a winit window.
-          //
-          // Most actions that you can bind here can also be invoked programmatically with
-          // `niri msg action do-something`.
-
-          // Mod-Shift-/, which is usually the same as Mod-?,
-          // shows a list of important hotkeys.
           Mod+Shift+Slash { show-hotkey-overlay; }
 
-          // Suggested binds for running programs: terminal, app launcher, screen locker.
-          Mod+Return { spawn "alacritty"; }
-          Mod+Shift+Return { spawn "chromium"; }
+          Mod+Return { spawn "xdg-terminal"; }
+          Mod+Shift+Return { spawn "xdg-open" "https://"; }
 
           // Core Noctalia binds
           Mod+D { spawn "${noctalia}" "ipc" "call" "launcher" "toggle"; }
@@ -299,8 +116,6 @@
           // Brightness controls
           XF86MonBrightnessUp { spawn "${noctalia}" "ipc" "call" "brightness" "increase"; }
           XF86MonBrightnessDown { spawn "${noctalia}" "ipc" "call" "brightness" "decrease"; }
-
-          Mod+Ctrl+Shift+Alt+L { spawn "chromium" "--new-window" "https://www.linkedin.com/"; }
 
           Mod+Q { close-window; }
 
@@ -457,8 +272,8 @@
           Mod+R { switch-preset-column-width; }
           Mod+Shift+R { switch-preset-window-height; }
           Mod+Ctrl+R { reset-window-height; }
-          Mod+F { maximize-column; }
-          Mod+Shift+F { maximize-window-to-edges; }
+          Mod+F { maximize-window-to-edges; }
+          Mod+Shift+F { fullscreen-window; }
 
           // Expand the focused column to space not taken up by other fully visible columns.
           // Makes the column "fill the rest of the space".
@@ -526,8 +341,12 @@
 
       // noctalia settings
       layer-rule {
-          match namespace="^quickshell-overview$"
+          match namespace="^noctalia-wallpaper"
           place-within-backdrop true
+      }
+
+      layout {
+        background-color "transparent"
       }
 
       debug {
@@ -544,7 +363,7 @@
     wl-clipboard
   ];
 
-  services.upower.enable = true;
+  # services.upower.enable = true;
 
   # enable polkit auth agent
   security.soteria.enable = true;
@@ -598,8 +417,6 @@
 
   # configure default editor
   environment.variables = {
-    EDITOR = "${lib.getExe pkgs.customPackages.helix-wrapped}";
-    # PAGER = "${lib.getExe pkgs.customPackages.helix-wrapped}";
-    # MANPAGER = "${lib.getExe pkgs.customPackages.helix-wrapped}";
+    EDITOR = "hx";
   };
 }

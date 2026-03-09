@@ -5,17 +5,7 @@
 !LICENSE
 !flake.nix
 !flake.lock
-!/config/
-!/config/**
-!/hardware/
-!/hardware/**
 !/modules/
 !/modules/**
-!/programs/
-!/programs/**
-!/utils/
-!/utils/**
-!/templates/
-!/templates/**
 
 .direnv/

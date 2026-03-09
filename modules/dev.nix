@@ -1,18 +1,5 @@
 {
-  lib,
-  pkgs,
-  ...
-}:
-{
-  programs.git = {
-    enable = true;
-    lfs.enable = true;
-    config = {
-      init.defaultBranch = "main";
-      user.email = "asapaparo@gmail.com";
-      user.name = "Asa Paparo";
-    };
-  };
+  programs.git.enable = true;
 
   # tell shells over ssh that we are running a 256 bit color xterm
   programs.ssh.extraConfig = ''
@@ -46,15 +33,4 @@
   # };
 
   programs.direnv.enable = true;
-
-  # services.ollama = {
-  #   enable = true;
-  #   # radeon 780M igpu = gfx1103
-  #   # gfx1100 is closest working target
-  #   rocmOverrideGfx = "11.0.0";
-  #   acceleration = "rocm";
-  #   # loadModels = [
-  #   #   "gemma3n:latest"
-  #   # ];
-  # };
 }

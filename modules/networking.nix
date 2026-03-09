@@ -40,6 +40,7 @@
   # lockKernelModules
   # boot.kernelModules = [ "af_packet" ];
 
+  # networking.wireless.enable = false;
   services.avahi.enable = false;
   services.printing.enable = false;
 }
