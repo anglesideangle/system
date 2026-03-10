@@ -84,5 +84,8 @@
 
   hardware.graphics.enable = true;
 
-  programs.nh.enable = true;
+  programs.nh = {
+    enable = true;
+    flake = "/var/nixos";
+  };
 }

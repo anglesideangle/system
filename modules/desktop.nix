@@ -363,7 +363,7 @@
     wl-clipboard
   ];
 
-  # services.upower.enable = true;
+  services.upower.enable = true;
 
   # enable polkit auth agent
   security.soteria.enable = true;
