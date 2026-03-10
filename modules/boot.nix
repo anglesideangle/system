@@ -8,7 +8,7 @@
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
-    configurationLimit = 4;
+    configurationLimit = 8;
     autoGenerateKeys.enable = true;
     autoEnrollKeys = {
       enable = true;
