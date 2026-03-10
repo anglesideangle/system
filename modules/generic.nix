@@ -71,7 +71,7 @@
   # User accounts
   users.mutableUsers = false;
   systemd.sysusers.enable = true;
-  users.users.root.hashedPassword = "!";
+  users.users.root.initialHashedPassword = "!";
   services.homed = {
     enable = true;
     settings.Home = {
