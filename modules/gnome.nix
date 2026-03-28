@@ -20,6 +20,8 @@
       settings = {
         "org/gnome/desktop/input-sources" = {
           xkb-options = [ "caps:escape" ];
+          repeat-delay = "300";
+          repeat-rate = "32";
         };
         # "org/gnome/mutter" = {
         #   experimental-features = [
