@@ -7,7 +7,7 @@
   services.desktopManager.gnome.enable = true;
 
   services.gnome.core-apps.enable = true;
-  services.gnome.core-developer-tools.enable = true;
+  services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour
@@ -21,14 +21,14 @@
         "org/gnome/desktop/input-sources" = {
           xkb-options = [ "caps:escape" ];
         };
-        "org/gnome/mutter" = {
-          experimental-features = [
-            "scale-monitor-framebuffer"
-            "variable-refresh-rate"
-            "xwayland-native-scaling"
-            "autoclose-xwayland"
-          ];
-        };
+        # "org/gnome/mutter" = {
+        #   experimental-features = [
+        #     "scale-monitor-framebuffer"
+        #     "variable-refresh-rate"
+        #     "xwayland-native-scaling"
+        #     "autoclose-xwayland"
+        #   ];
+        # };
       };
     }
   ];
