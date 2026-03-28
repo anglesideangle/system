@@ -370,7 +370,7 @@
   # https://github.com/YaLTeR/niri/wiki/Important-Software
 
   environment.systemPackages = with pkgs; [
-    noctalia-shell
+    # noctalia-shell
     adwaita-icon-theme
     nautilus
     wl-clipboard
