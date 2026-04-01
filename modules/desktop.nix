@@ -351,20 +351,6 @@
           // moving the mouse or pressing any other key.
           // Mod+Shift+P { power-off-monitors; }
       }
-
-      // noctalia settings
-      layer-rule {
-          match namespace="^noctalia-wallpaper"
-          place-within-backdrop true
-      }
-
-      layout {
-        background-color "transparent"
-      }
-
-      debug {
-          honor-xdg-activation-with-invalid-serial
-      }
     '';
 
   # https://github.com/YaLTeR/niri/wiki/Important-Software
