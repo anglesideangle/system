@@ -357,7 +357,6 @@
 
   environment.systemPackages = with pkgs; [
     noctalia-shell
-    adwaita-icon-theme
     nautilus
     wl-clipboard
   ];
@@ -369,7 +368,6 @@
 
   # enable gnome keyring
   services.gnome.gnome-keyring.enable = true;
-  services.gnome.gnome-online-accounts.enable = true;
 
   # some gnome settings (dark mode)
   programs.dconf.profiles.user.databases = [
