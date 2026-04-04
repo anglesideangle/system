@@ -357,6 +357,7 @@
 
   environment.systemPackages = with pkgs; [
     noctalia-shell
+    adwaita-icon-theme
     nautilus
     wl-clipboard
   ];
