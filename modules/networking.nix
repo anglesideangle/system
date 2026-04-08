@@ -3,8 +3,6 @@
   services.resolved.enable = true;
 
   networking = {
-    hostName = "asa-fw";
-
     # use systemd-networkd backend instead of scripted networking
     useNetworkd = true;
     # disable deprecated builtin dhcp (manually implemented below)

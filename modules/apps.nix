@@ -135,10 +135,9 @@
   };
 
   # needed for electron apps that won't run on wayland
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  # environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   environment.systemPackages = [
-    pkgs.alacritty
     pkgs.helix
   ];
 }

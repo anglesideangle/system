@@ -4,13 +4,8 @@
   ...
 }:
 {
-  # imports = [ "${modulesPath}/profiles/perlless.nix" ];
-  # stuff to remove perl
-  # system.disableInstallerTools = true;
   system.tools.nixos-generate-config.enable = lib.mkDefault false;
-  environment.defaultPackages = lib.mkDefault [ ];
-  # documentation.info.enable = lib.mkDefault false;
-  # documentation.nixos.enable = lib.mkDefault false;
+  # environment.defaultPackages = lib.mkDefault [ ];
 
   nix.settings = {
     experimental-features = [
@@ -44,11 +39,6 @@
 
   security.sudo.enable = false;
 
-  system.etc.overlay = {
-    enable = true;
-    mutable = false;
-  };
-
   # security.lockKernelModules = true;
   # ^ breaks a lot of stuff
   security.protectKernelImage = true;
@@ -80,6 +70,7 @@
     };
   };
 
+  environment.systemPackages = [ pkgs.nushell ];
   environment.shells = [ pkgs.nushell ];
 
   hardware.graphics.enable = true;

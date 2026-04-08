@@ -37,14 +37,11 @@
           imports = [
             modules/generic.nix
             modules/boot.nix
-            modules/desktop.nix
-            # modules/cosmic.nix
-            # modules/gnome.nix
+            modules/cosmic.nix
             modules/apps.nix
             modules/fonts.nix
             modules/networking.nix
             modules/audio.nix
-            modules/dev.nix
             lanzaboote.nixosModules.lanzaboote
           ];
         };
