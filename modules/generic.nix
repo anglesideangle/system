@@ -22,7 +22,7 @@
 
   nix.gc = {
     automatic = true;
-    dates = "weekly";
+    dates = "monthly";
   };
 
   nix.channel.enable = false;
@@ -43,10 +43,11 @@
   # ^ breaks a lot of stuff
   security.protectKernelImage = true;
 
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-  };
+  # zramSwap = {
+  #   enable = true;
+  #   algorithm = "zstd";
+  # };
+  boot.zswap.enable = true;
 
   services.dbus.implementation = "broker";
 
@@ -58,22 +59,12 @@
 
   services.fwupd.enable = true;
 
-  # User accounts
   users.mutableUsers = false;
-  systemd.sysusers.enable = true;
-  users.allowNoPasswordLogin = true;
-  services.homed = {
-    enable = true;
-    settings.Home = {
-      DefaultFileSystemType = "btrfs";
-      DefaultStorage = "luks";
-    };
-  };
-
-  environment.systemPackages = [ pkgs.nushell ];
-  environment.shells = [ pkgs.nushell ];
+  services.userborn.enable = true;
 
   hardware.graphics.enable = true;
+
+  services.kmscon.enable = true;
 
   programs.nh = {
     enable = true;
