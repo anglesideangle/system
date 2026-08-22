@@ -17,7 +17,7 @@
     trusted-users = [ "root" ];
     allowed-users = [ "@wheel" ];
     auto-optimise-store = true;
-    pure-eval = true;
+    # pure-eval = true;
   };
 
   nix.gc = {
@@ -38,6 +38,11 @@
   };
 
   security.sudo.enable = false;
+  security.polkit.enablePkexecWrapper = false;
+  security.shadow.enable = false;
+  security.account-utils.enable = true;
+
+  security.pam.services.login.startSession = true;
 
   # security.lockKernelModules = true;
   # ^ breaks a lot of stuff

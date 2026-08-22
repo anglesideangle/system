@@ -13,13 +13,15 @@
     };
   };
 
-  boot.supportedFilesystems = lib.mkForce [ "btrfs" "vfat" ];
+  boot.supportedFilesystems = lib.mkForce [
+    "btrfs"
+    "vfat"
+  ];
 
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = true;
   system.nixos-init.enable = true;
-
 
   system.etc.overlay = {
     enable = true;

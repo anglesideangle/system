@@ -6,7 +6,9 @@
 
   services.system76-scheduler.enable = true;
 
-  environment.systemPackages = [ pkgs.wl-clipboard-rs ];
+  environment.systemPackages = [ pkgs.wl-clipboard ];
+
+  systemd.services.NetworkManager-wait-online.enable = false;
 
   environment.variables = {
     EDITOR = "hx";
