@@ -5,7 +5,11 @@
 }:
 {
   system.tools.nixos-generate-config.enable = lib.mkDefault false;
-  # environment.defaultPackages = lib.mkDefault [ ];
+  environment.defaultPackages = lib.mkForce [
+    pkgs.rsync
+    pkgs.strace
+    pkgs.util-linux
+  ];
 
   nix.settings = {
     experimental-features = [
@@ -39,22 +43,15 @@
 
   security.sudo.enable = false;
   security.polkit.enablePkexecWrapper = false;
-  security.shadow.enable = false;
+  # security.shadow.enable = false;
   security.account-utils.enable = true;
 
   security.pam.services.login.startSession = true;
 
   # security.lockKernelModules = true;
-  # ^ breaks a lot of stuff
   security.protectKernelImage = true;
 
-  # zramSwap = {
-  #   enable = true;
-  #   algorithm = "zstd";
-  # };
   boot.zswap.enable = true;
-
-  services.dbus.implementation = "broker";
 
   # prevent freezing on high loads
   services.irqbalance.enable = true;

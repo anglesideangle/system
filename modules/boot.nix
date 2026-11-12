@@ -5,7 +5,19 @@
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
-    configurationLimit = 8;
+    configurationLimit = 4;
+    measuredBoot = {
+      enable = true;
+      pcrs = [
+        0
+        4
+        7
+      ];
+      autoCryptenroll = {
+        enable = true;
+        device = "/dev/disk/by-label/luks";
+      };
+    };
     autoGenerateKeys.enable = true;
     autoEnrollKeys = {
       enable = true;
@@ -20,7 +32,6 @@
 
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.initrd.systemd.enable = true;
   system.nixos-init.enable = true;
 
   system.etc.overlay = {

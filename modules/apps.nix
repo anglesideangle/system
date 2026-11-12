@@ -46,7 +46,7 @@
       # "DefaultJavaScriptJitSetting" = 2;
       # "DefaultJavaScriptOptimizerSetting" = 1;
       "DefaultSensorsSetting" = 2;
-      "DefaultWebUsbGuardSetting" = 2;
+      # "DefaultWebUsbGuardSetting" = 2;
       "DesktopSharingHubEnabled" = false;
       "DevToolsGenAiSettings" = 2;
       # "Disable3DAPIs" = true;
@@ -133,9 +133,6 @@
       # "WebUsbAskForUrls" = [ ] # whitelist of sites allowed to ask for webusb
     };
   };
-
-  # needed for electron apps that won't run on wayland
-  # environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   environment.systemPackages = [
     pkgs.helix
